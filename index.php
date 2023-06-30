@@ -27,6 +27,8 @@
 #
 #***************************************************************************************
 //declare(strict_types=1);
+
+
 error_reporting(0);
 
 include_once "functions/DelDirectoryFnc.php";

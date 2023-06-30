@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3'
 services:
   opensis:
     build: ./
@@ -9,7 +9,7 @@ services:
       - 5000:80
     environment:
       DB_HOST: opensis_db
-      DB_USER: opensis
+      DB_USER: root
       DB_PASSWORD: fakepassword
       DB_NAME: opensis
     networks:
@@ -19,18 +19,23 @@ services:
   
   opensis_db:
     image: mysql:latest
-    restart: always
-    command: --default-authentication-plugin=mysql_native_password
+    user: 'root'
+    restart: on-failure
+    command:
+      - --sql_mode=
+      - --default-authentication-plugin=mysql_native_password
+      - --event-scheduler=ON
+      - --log-bin-trust-function-creators=1
+
     volumes:
-      - mysql-data:/var/lib/mysql
+      - opensis_data:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=fakepassword
       - MYSQL_HOSTNAME=opensis_db
       - MYSQL_DATABASE=opensis
-      - MYSQL_PASSWORD=fakepassword
       - MYSQL_USERNAME=opensis
     ports:
-      - 3306:3306
+      - 3307:3306
     networks:
       - backend
 
@@ -38,4 +43,4 @@ networks:
   backend:
   
 volumes:
-  mysql-data: ~
+  opensis_data:
