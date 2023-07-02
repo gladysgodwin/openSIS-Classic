@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opensis_1.0
+  labels:
+    name: opensis_1.0
+  namespace: opensis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: opensis_1.0
+  template:
+    metadata:
+      labels:
+        name: opensis_1.0
+    spec:
+      containers:
+      - name: opensis_1.0
+        image: gladysgodwin/opensis:1.0
+        resources:
+          limits:
+            memory: "200Mi"
+            cpu: "200m"
+          requests:
+            cpu: "200m"
+            memory: "200Mi"
+        ports:
+        - containerPort: 5000
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 180
+          periodSeconds: 3

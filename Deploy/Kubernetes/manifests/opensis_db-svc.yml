@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: opensis_db
+  annotations:
+    prometheus.io/scrape: 'true'
+  namespace: opensis
+  labels:
+    name: opensis_db
+
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3307
+  selector:
+    name: opensis_db  

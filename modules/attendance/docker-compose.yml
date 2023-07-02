@@ -3,22 +3,27 @@ services:
   attendance_module:
     build: .
     ports:
-      - "5000:5000"
+      - "5001:5000"
     volumes:
       - .:/var/www/html
   attendance_db:
     image: mysql:latest
+    command:
+      - --sql_mode=
+      - --default-authentication-plugin=mysql_native_password
+      - --event-scheduler=ON
+      - --log-bin-trust-function-creators=1
     ports:
-      - 3306:3306
+      - 3308:3306
     environment:
       - MYSQL_DATABASE=${DB_DATABASE}
       - MYSQL_USER=${DB_USERNAME}
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     volumes:
-      - db-data:/var/lib/mysql
-    restart: always
+      - attendance-data:/var/lib/mysql
+    restart: on-failure
 
 
 volumes:
-  db-data:
+  attendance-data:

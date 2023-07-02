@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opensis_1.0-db
+  labels:
+    name: opensis_1.0-db
+  namespace: opensis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opensis_1.0-db
+  template:
+    metadata:
+      labels:
+        app: opensis_1.0-db
+    spec:
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: opensis-pvc
+      containers:
+      - name: opensis_1.0-db
+        image: gladysgodwin/opensis:1.0_db
+        resources:
+          limits:
+            memory: "200Mi"
+            cpu: "200m"
+          requests:
+            cpu: "200m"
+            memory: "200Mi"
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: fakepassword
+          - name: MYSQL_DATABASE
+            value: opensis_db
+        command: 
+          - --mysql-mode=
+        ports:
+        - name: mysql
+          containerPort: 3306
+        volumeMounts:
+            - name: data-volume
+              mountPath: /var/lib/mysql
+

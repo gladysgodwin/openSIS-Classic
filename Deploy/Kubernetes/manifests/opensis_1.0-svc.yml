@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: opensis_1.0
+  annotations:
+    prometheus.io/scape: 'true'
+  labels:
+    name: opensis_1.0
+  namespace: opensis
+
+spec:
+  type: loadBalancer
+  ports: 
+  - port: 5000
+    targetPort: 5001
+    
+  selector:
+    name: opensis_1.0
+
