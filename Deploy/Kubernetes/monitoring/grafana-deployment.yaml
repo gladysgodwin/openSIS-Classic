@@ -25,7 +25,7 @@ spec:
             memory: "1Gi"
             cpu: "1000m"
           requests: 
-            memory: 500M
+            memory: 500Mi
             cpu: "500m"
         volumeMounts:
           - mountPath: /var/lib/grafana

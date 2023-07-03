@@ -8,15 +8,54 @@ metadata:
 data:
   prometheus.rules: |-
     groups:
-    - name: devopscube demo alert
+    - name: opensis alerts
       rules:
       - alert: High Pod Memory
         expr: sum(container_memory_usage_bytes) > 1
         for: 1m
         labels:
-          severity: slack
+          severity: 'warning'
         annotations:
           summary: High Memory Usage
+
+      - alert: HighErrorRate
+        expr: rate(request_duration_seconds_count{status_code="500"}[5m]) > 1
+        for: 5m
+        labels:
+          severity: 'critical'
+        annotations:
+          summary: "High HTTP 500 error rates"
+          description: "Rate of HTTP 500 errors per 5 minutes: {{ $value }}"
+      - alert: KubernetesHostHighCPUUsage
+        expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 90
+        for: 15m
+        labels:
+          severity: "warning"
+          context: "node"
+          cluster:
+        annotations:
+          summary: "High load on node"
+          description: "Node {{ $labels.instance }} has more than 90% CPU load"
+      - alert: KubernetesNodeDiskPressure
+        expr: kube_node_status_condition{app="kube-state-metrics",condition="DiskPressure",status="true"} == 1
+        for: 10m
+        labels:
+          severity: "warning"
+          context: "node"
+          cluster:
+        annotations:
+          description: "Insufficient disk space"
+          summary: "Node {{ $labels.node }} under pressure due to insufficient available disk space"
+      - alert: KubernetesPodWaiting
+        expr: (sum(kube_pod_container_status_waiting_reason{app="kube-state-metrics"}) by (container,namespace,reason)) > 0
+        for: 15m
+        labels:
+          severity: "warning"
+          context: "pod"
+          cluster:
+        annotations:
+          description: "Pod waiting to start"
+          summary: "Pod {{ $labels.container }} in {{ $labels.namespace }} namespace waiting to start for more than 15 min"
   prometheus.yml: |-
     global:
       scrape_interval: 5s

@@ -10,6 +10,7 @@ rules:
   - services
   - endpoints
   - pods
+  - apiserver
   verbs: ["get", "list", "watch"]
 - apiGroups:
   - extensions

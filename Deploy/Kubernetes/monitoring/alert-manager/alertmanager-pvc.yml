@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: opensis-pvc-alertmanager
+  namespace: monitoring
+  labels:
+    app: alertmanager
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "local-storage"
+spec:
+  storageClassName: local-storage
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

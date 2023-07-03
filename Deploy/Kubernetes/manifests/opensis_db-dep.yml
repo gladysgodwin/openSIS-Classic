@@ -31,9 +31,15 @@ spec:
             memory: "200Mi"
         env:
           - name: MYSQL_ROOT_PASSWORD
-            value: fakepassword
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: opensisdb-password
           - name: MYSQL_DATABASE
-            value: opensis_db
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: opensis-database
         command: 
           - --mysql-mode=
         ports:

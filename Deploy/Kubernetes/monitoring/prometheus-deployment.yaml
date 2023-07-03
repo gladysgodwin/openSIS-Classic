@@ -11,23 +11,54 @@ spec:
     matchLabels:
       app: prometheus-server
   template:
+  strategy: 
+    type: Recreate
     metadata:
       labels:
         app: prometheus-server
     spec:
       containers:
-        - name: prometheus
-          image: prom/prometheus
-          args:
-            - "--config.file=/etc/prometheus/prometheus.yml"
-            - "--storage.tsdb.path=/prometheus/"
-          ports:
-            - containerPort: 9090
-          volumeMounts:
-            - name: prometheus-config-volume
-              mountPath: /etc/prometheus/
-            - name: prometheus-storage-volume
-              mountPath: /prometheus/
+      - name: prometheus
+        image: prom/prometheus
+        args:
+          - "--config.file=/etc/prometheus/prometheus.yml"
+          - "--storage.tsdb.path=/prometheus/"
+        ports:
+          - containerPort: 9090
+        volumeMounts:
+          - name: prometheus-config-volume
+            mountPath: /etc/prometheus/
+            readOnly: true
+          - name: prometheus-storage-volume
+            mountPath: /prometheus/
+        resources:
+          limits:
+            memory: "2000Mi"
+            cpu: "200m"
+          requests:
+            memory: 1536Mi
+            cpu: 150m
+        livenessProbe:
+          httpGet:
+            path: /-/healthy
+            port: 9090
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /-/ready
+            port: 9090
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          periodSeconds: 10
+          successThreshold: 1 
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
       volumes:
         - name: prometheus-config-volume
           configMap:
