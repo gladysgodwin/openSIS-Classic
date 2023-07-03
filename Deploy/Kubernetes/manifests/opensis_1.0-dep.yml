@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: opensis_1.0
+  annotations:
+    prometheus.io/scrape: 'true'
   labels:
     name: opensis_1.0
   namespace: opensis

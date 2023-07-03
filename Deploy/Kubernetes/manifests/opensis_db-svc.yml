@@ -4,6 +4,8 @@ metadata:
   name: opensis_db
   annotations:
     prometheus.io/scrape: 'true'
+    prometheus.io/path: /metrics 
+    prometheus.io/port:   '3307'
   namespace: opensis
   labels:
     name: opensis_db

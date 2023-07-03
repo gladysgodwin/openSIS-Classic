@@ -4,9 +4,11 @@ metadata:
   name: opensis_1.0
   annotations:
     prometheus.io/scape: 'true'
+    prometheus.io/port:   '5001'
   labels:
     name: opensis_1.0
   namespace: opensis
+  
 
 spec:
   type: loadBalancer
