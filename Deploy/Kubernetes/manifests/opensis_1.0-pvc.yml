@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: opensis-pvc
+  name: 'opensis-pvc'
   namespace: opensis
 spec:
   storageClassName: local-storage

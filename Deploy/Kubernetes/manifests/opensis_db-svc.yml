@@ -1,18 +1,18 @@
-apiVersion: apps/v1
+apiVersion: v1
 kind: Service
 metadata:
-  name: opensis_db
+  name: 'opensis-db'
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/path: /metrics 
     prometheus.io/port:   '3307'
   namespace: opensis
   labels:
-    name: opensis_db
+    name: 'opensis-db'
 
 spec:
   ports:
   - port: 3306
     targetPort: 3307
   selector:
-    name: opensis_db  
+    name: 'opensis-db'  
