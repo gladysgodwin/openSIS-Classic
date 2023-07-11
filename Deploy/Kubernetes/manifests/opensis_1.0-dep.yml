@@ -11,6 +11,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
+
       name: 'opensis'
   template:
     metadata:
@@ -19,19 +20,20 @@ spec:
     spec:
       containers:
       - name: 'opensis'
-        image: gladysgodwin/opensis:1.0
+        image: gladysgodwin/theopensis-erp:1.2
         resources:
           limits:
-            memory: "800Mi"
-            cpu: "600m"
+            memory: "1000Mi"
+            cpu: "1000m"
           requests:
             cpu: "200m"
             memory: "200Mi"
         ports:
         - containerPort: 5000
         securityContext:
+          runAsUser: 1000
+          runAsGroup: 3000
           runAsNonRoot: true
-          runAsUser: 10001
           capabilities:
             drop:
               - all
@@ -50,3 +52,12 @@ spec:
             port: 80
           initialDelaySeconds: 180
           periodSeconds: 3
+        volumeMounts:
+        - name: data-volume
+          mountPath: /var/www/html
+        - name: data-volume
+          mountPath: /var/run/apache2/
+      volumes:
+      - name: 'data-volume'
+        persistentVolumeClaim:
+          claimName: 'opensis-pvc'

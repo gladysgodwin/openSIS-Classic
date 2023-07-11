@@ -5,7 +5,7 @@ metadata:
    namespace: opensis
 spec:
   capacity:
-     storage: 2Gi
+     storage: 4Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Recycle

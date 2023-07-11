@@ -15,20 +15,9 @@ spec:
       labels:
         app: 'opensis-db'
     spec:
-      volumes:
-        - name: 'data-volume'
-          persistentVolumeClaim:
-            claimName: opensis-pvc
       containers:
       - name: 'opensis-db'
-        image: 'gladysgodwin/opensis:1.0_db'
-        resources:
-          limits:
-            memory: "600Mi"
-            cpu: "200m"
-          requests:
-            cpu: "200m"
-            memory: "200Mi"
+        image: 'mysql:latest'
         env:
           - name: MYSQL_ROOT_PASSWORD
             valueFrom:
@@ -40,12 +29,33 @@ spec:
               secretKeyRef:
                 name: mysql-secret
                 key: opensis-database
-        #command: 
-         # - --mysql-mode=""
+          - name: MYSQL_HOSTNAME
+            valueFrom:
+              secretKeyRef:
+                key: opensis-hostname
+                name: mysql-secret
+        resources:
+          limits:
+            memory: "600Mi"
+            cpu: "200m"
+          requests:
+            cpu: "200m"
+            memory: "200Mi"
         ports:
         - name: mysql
           containerPort: 3306
+        securityContext:
+          runAsUser: 0
         volumeMounts:
             - name: data-volume
               mountPath: /var/lib/mysql
+            - name: config-volume
+              mountPath: /etc/mysql/conf.d
+      volumes:
+        - name: 'data-volume'
+          persistentVolumeClaim:
+            claimName: opensis-pvc
+        - name: config-volume
+          configMap:
+            name: mysql-config
 
